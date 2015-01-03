@@ -1,0 +1,21 @@
+{
+  "name": "fluxbone",
+  "version": "1.0.0",
+  "description": "Bind Backbone Models and Collections to React components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "reactjs",
+    "flux",
+    "backbone",
+    "reactbone",
+    "fluxbone",
+    "data",
+    "binding"
+  ],
+  "author": "rattray.alex@gmail.com",
+  "license": "ISC"
+}
