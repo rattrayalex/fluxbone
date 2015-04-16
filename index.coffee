@@ -16,9 +16,9 @@ Mixin = (model_name, event_name="all", cb_name) ->
         @[eventCbName]
         @
 
-  mixin[eventCbName] = () ->
+  mixin[eventCbName] = (args...) ->
     if cb_name? and @[cb_name]?
-      @[cb_name]()
+      @[cb_name](args...)
     else
       @forceUpdate()
 
