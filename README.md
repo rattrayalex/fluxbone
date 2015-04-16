@@ -10,15 +10,15 @@ The usage pattern this library is intended for is described in [this article](ht
 var MyComponent = React.createClass({
     mixins: [
         // runs this.forceUpdate() on `all` events on the model at this.myFirstProp
-        FluxBone.ModelMixin("myFirstProp"), 
+        FluxBone.Mixin("myFirstProp"), 
 
         // runs this.forceUpdate() on "change" events on this.mySecondProp
-        FluxBone.ModelMixin("mySecondProp", "change"),
+        FluxBone.Mixin("mySecondProp", "change"),
 
-        // runs this.myCustomCallback() on "add", "remove", "reset" events on this.myThirdProp
-        FluxBone.CollectionMixin("myThirdProp", "add remove reset", "myCustomCallback")
+        // runs this.myCustomCallback() on "add" or "remove" events on this.myThirdProp
+        FluxBone.Mixin("myCollectionProp", "add remove", "myCustomCallback")
     ],
-    myCustomCallback: function() {
+    myCustomCallback: function(model, collection, options) {
         // ...
     },
     // ...
@@ -27,14 +27,16 @@ var MyComponent = React.createClass({
 
 ## Example
 
+Also in `example/index.js`:
+
 ```js
 var Backbone = require('backbone');
 var React = require('react/addons');
 var FluxBone = require('fluxbone');
 
 // create your models (typically in another file via Browserify et al)
-var Author = Backbone.Model.extend({})
-var Book = Backbone.Model.extend({})
+var Author = Backbone.Model.extend({});
+var Book = Backbone.Model.extend({});
 var Books = Backbone.Collection.extend({
     model: Book
 });
@@ -47,18 +49,22 @@ var lotr_series = new Books([
     {'title': 'The Return of the King'}
 ]);
 
-// the ListView 
+// the ListView
 var TolkeinBookShelf = React.createClass({
     mixins: [
         // will trigger this.forceUpdate() on `all` events of the `books` collection.
-        FluxBone.CollectionMixin('books'),
+        FluxBone.Mixin('books'),
         React.addons.PureRenderMixin
     ],
     render: function () {
-        return React.DOM.ul({},
+        return React.createElement('ul', {},
             this.props.books.models.map(function (book) {
-                return Book({book: book, author: tolkein})
-            });
+                return React.createElement(Book, {
+                    key: book.cid,
+                    book: book,
+                    author: tolkein
+                })
+            })
         );
     }
 });
@@ -67,16 +73,16 @@ var TolkeinBookShelf = React.createClass({
 var Book = React.createClass({
     mixins: [
         // triggers `this.forceUpdate()` whenever the `book`'s "change" event is fired.
-        FluxBone.ModelMixin('book', 'change'),
+        FluxBone.Mixin('book', 'change'),
         // triggers `this.handleAuthorChange()` on the `author`'s "change" event.
-        FluxBone.ModelMixin('author', 'change', 'handleAuthorChange'),
+        FluxBone.Mixin('author', 'change', 'handleAuthorChange'),
         React.addons.PureRenderMixin
     ],
     handleAuthorChange: function (model, options) {
         alert('what do you mean, the author changed?');
     },
     render: function(){
-        return React.DOM.li({}, 
+        return React.createElement('li', {},
             'This book is ' + this.props.book.get('title') +
             ', by ' + this.props.author.get('name')
         )
@@ -84,8 +90,8 @@ var Book = React.createClass({
 });
 
 React.render(
-    document.body, 
-    TolkeinBookShelf({books: lotr_series})
+    React.createElement(TolkeinBookShelf, {books: lotr_series}),
+    document.body
 );
 
 // renders:
