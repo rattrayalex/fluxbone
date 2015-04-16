@@ -1,6 +1,6 @@
 {
   "name": "fluxbone",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bind Backbone Models and Collections to React components",
   "repository": "github.com/rattrayalex/fluxbone",
   "main": "index.js",
