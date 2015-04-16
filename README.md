@@ -7,6 +7,27 @@ The usage pattern this library is intended for is described in [this article](ht
 ## Usage: 
 
 ```js
+var MyComponent = React.createClass({
+    mixins: [
+        // runs this.forceUpdate() on `all` events on the model at this.myFirstProp
+        FluxBone.ModelMixin("myFirstProp"), 
+
+        // runs this.forceUpdate() on "change" events on this.mySecondProp
+        FluxBone.ModelMixin("mySecondProp", "change"),
+
+        // runs this.myCustomCallback() on "add", "remove", "reset" events on this.myThirdProp
+        FluxBone.CollectionMixin("myThirdProp", "add remove reset", "myCustomCallback")
+    ],
+    myCustomCallback: function() {
+        // ...
+    },
+    // ...
+});
+```
+
+## Example
+
+```js
 var Backbone = require('backbone');
 var React = require('react/addons');
 var FluxBone = require('fluxbone');
